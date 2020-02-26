@@ -8,8 +8,12 @@
 	},
 	"content_scripts": [
 		{
+			"run_at": "document_start",
 			"matches": ["<all_urls>"],
 			"js": ["./content-script.js"]
 		}
+	],
+	"permissions": [
+		"webNavigation"
 	]
 }
