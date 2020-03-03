@@ -1,57 +1,72 @@
-console.log('Content script injected.');
+class ContentScript {
+	constructor() {
+		this.shortcutMap = {};
 
-function onMessageReceieved(message, sender) {
-	console.log('Message received.');
+		// Keys currently being pressed.
+		this.keyCombination = [];
 
-	if (message.name !== 'shortcuts') {
-		console.warn('Unknown message.');
-		return;
+		this.bindEvents();
+
+		console.log('Content script initialised.');
 	}
 
-	let shortcuts = message.payload;
+	bindEvents() {
+		chrome.runtime.onMessage.addListener(this.onMessageReceieved.bind(this));
+		// todo: change these window
+		document.addEventListener('keydown', this.onKeyDown.bind(this));
+		document.addEventListener('keyup', this.onKeyUp.bind(this));
+		window.addEventListener('blur', this.onBlur.bind(this));
+	}
 
-	shortcuts.forEach(shortcut => {
-		bindShortcut(shortcut.keys, shortcut.action);
-	});
+	onMessageReceieved(message, sender) {
+		console.log('Message received.');
+
+		if (message.name !== 'shortcuts') {
+			console.warn('Unknown message.');
+			return;
+		}
+
+		let shortcuts = message.payload;
+
+		shortcuts.forEach(shortcut => {
+			this.bindShortcut(shortcut.keys, shortcut.action);
+		});
+	}
+
+	bindShortcut(keys, action) {
+		console.log(`Binding shortcut for keys ${keys.join('+')} to action: ${action}`);
+		let keyCombination = keys.join('+');
+		this.shortcutMap[keyCombination] = function() {
+			eval(action)();
+		}
+	}
+
+	onKeyDown(event) {
+		this.keyCombination.push(event.key);
+		
+		let lookupKey = this.keyCombination.join('+');
+		let fn = this.shortcutMap[lookupKey];
+
+		if (!fn) {
+			console.log(`No action found for combination: ${lookupKey}`);
+		} else {
+			event.preventDefault();
+			console.log('Found action!');
+			fn();
+		}
+
+	}
+
+	onKeyUp(event) {
+		console.log('Key was released.');
+		this.keyCombination = [];
+	}
+
+	onBlur(event) {
+		console.log('The window has lost focus');
+		this.keyCombination = [];
+	}
+
 }
 
-chrome.runtime.onMessage.addListener(onMessageReceieved);
-
-let shortcutMap = {};
-
-function bindShortcut(keys, action) {
-	console.log(`Binding shortcut for keys ${keys.join('+')} to action: ${action}`);
-	let keyCombination = keys.join('+');
-	shortcutMap[keyCombination] = function() {
-		eval(action)();
-	}
-}
-
-// Keys currently being pressed.
-let keyCombination = [];
-
-document.addEventListener('keydown', event => {
-	keyCombination.push(event.key);
-	
-	let lookupKey = keyCombination.join('+');
-	let fn = shortcutMap[lookupKey];
-
-	if (!fn) {
-		console.log(`No action found for combination: ${lookupKey}`);
-	} else {
-		event.preventDefault();
-		console.log('Found action!');
-		fn();
-	}
-
-});
-
-document.addEventListener('keyup', event => {
-	console.log('Key was released.');
-	keyCombination = [];
-});
-
-window.addEventListener('blur', event => {
-	console.log('The window has lost focus');
-	keyCombination = [];
-});
+new ContentScript();
