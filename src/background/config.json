@@ -1,5 +1,19 @@
 {
 	"shortcuts": {
+		"global": [
+			{
+				"keys": ["Control", "p"],
+				"action": "() => { console.log('This is a global shortcut'); }"
+			},
+			{
+				"keys": ["Control", "m"],
+				"action": "() => { console.log('Hello world 2222'); }"
+			},
+			{
+				"keys": ["Control", "a"],
+				"action": "() => { console.log('I will not be bound because there is a host shortcut available for this key combination.'); }"
+			}
+		],
 		"play.typeracer.com": [
 			{
 				"keys": ["Control", "a"],
