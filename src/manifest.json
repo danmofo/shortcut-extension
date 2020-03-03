@@ -15,7 +15,10 @@
 		{
 			"run_at": "document_start",
 			"matches": ["<all_urls>"],
-			"js": ["./content-script.js"]
+			"js": [
+				"./content/key-listener.js",
+				"./content/content-script.js"
+			]
 		}
 	],
 	"permissions": [

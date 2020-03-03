@@ -26,7 +26,7 @@ class Extension {
 
 	onDomContentLoaded(requestDetails) {
 		// Ignore requests for iFrames embedded in a page
-		if (requestDetails.parentFrameId !== -1) {
+		if(requestDetails.parentFrameId !== -1) {
 			return;
 		}
 
