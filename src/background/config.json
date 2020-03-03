@@ -1,0 +1,16 @@
+{
+	"shortcuts": {
+		"play.typeracer.com": [
+			{
+				"keys": ["Control", "a"],
+				"action": "() => { console.log('Hello world'); }"
+			}
+		],
+		"google.com": [
+			{
+				"keys": ["Control", "x"],
+				"action": "() => { document.location.reload(); }"
+			}
+		]
+	}
+}

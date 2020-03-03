@@ -1,7 +1,3 @@
-// bug: when focus is taken away from the current page, the keyup event handler is not fired, resulting in the key array
-// not being reset.
-// bug: How do we deal with chrome shortcuts? e.g. CTRL+R for reloading a page. How can we override this?
-
 console.log('Content script injected.');
 
 function onMessageReceieved(message, sender) {
@@ -43,6 +39,7 @@ document.addEventListener('keydown', event => {
 	if (!fn) {
 		console.log(`No action found for combination: ${lookupKey}`);
 	} else {
+		event.preventDefault();
 		console.log('Found action!');
 		fn();
 	}
@@ -51,5 +48,10 @@ document.addEventListener('keydown', event => {
 
 document.addEventListener('keyup', event => {
 	console.log('Key was released.');
+	keyCombination = [];
+});
+
+window.addEventListener('blur', event => {
+	console.log('The window has lost focus');
 	keyCombination = [];
 });

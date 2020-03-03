@@ -4,7 +4,12 @@
 	"version": "1.0.0",
 	"background": {
 		"persistent": true,
-		"scripts": ["./background.js"]
+		"scripts": [
+			"./background/utils.js",
+			"./background/storage.js",
+			"./background/shortcut.js",
+			"./background/background.js"
+		]
 	},
 	"content_scripts": [
 		{
@@ -15,5 +20,8 @@
 	],
 	"permissions": [
 		"webNavigation"
+	],
+	"web_accessible_resources": [
+		"./background/config.json"
 	]
 }
